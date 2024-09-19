@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "849377524611",
+    "project_id": "chat-application-df289",
+    "storage_bucket": "chat-application-df289.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849377524611:android:4e8373e58206173d9ed4b6",
+        "android_client_info": {
+          "package_name": "com.phucdv.chatapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9YDCw9cT0xh18moJAYrJvVHqXJdBDmgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
