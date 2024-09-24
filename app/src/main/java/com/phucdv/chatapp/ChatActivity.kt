@@ -2,7 +2,6 @@ package com.phucdv.chatapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -10,19 +9,20 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.phucdv.chatapp.adapter.ConversationAdapter
 import com.phucdv.chatapp.adapter.MessageAdapter
-import com.phucdv.chatapp.auth.registerUserByEmail
+import com.phucdv.chatapp.databinding.ActivityChatBinding
 import com.phucdv.chatapp.databinding.ActivityMainBinding
 import com.phucdv.chatapp.login.LoginActivity
-import kotlinx.coroutines.flow.collect
+import com.phucdv.chatapp.model.Message
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private val adapter = ConversationAdapter()
+class ChatActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityChatBinding
+    private val adapter = MessageAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         verifyUser()
 
         enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -38,27 +38,41 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        binding.rcvConversation.adapter = adapter
-        binding.rcvConversation.layoutManager = LinearLayoutManager(this)
-
-        val user = FirebaseAuth.getInstance().currentUser
-        binding.txtTitle.text = user?.email
-
-        binding.btnNewChat.setOnClickListener {
-            startActivity(Intent(this, NewChatActivity::class.java))
+        binding.rcvMessage.adapter = adapter
+        binding.rcvMessage.layoutManager = LinearLayoutManager(this).apply {
+            reverseLayout = true
         }
 
-        binding.btnLogout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            startActivity(Intent(this, LoginActivity::class.java))
+        val viewModel = ViewModelProvider(this)[ChatViewModel::class.java]
+        lifecycleScope.launch {
+            viewModel.chatData.collectLatest {
+                adapter.submitList(it)
+            }
+        }
+
+        val toUserId = intent.getStringExtra("extra_firestore_user_id") ?: ""
+        val myUserId = intent.getStringExtra("extra_firestore_my_user_id") ?: ""
+        viewModel.getChats(myUserId, toUserId)
+
+        binding.btnBack.setOnClickListener {
             finish()
+        }
+
+        val toUserEmail = intent.getStringExtra("extra_firestore_my_user_email") ?: ""
+        binding.txtTitle.text = toUserEmail
+
+        binding.btnSend.setOnClickListener {
+            viewModel.pushNewMessage(
+                Message("", binding.edtMessage.text.toString(), Timestamp.now(), myUserId, toUserId)
+            )
+            binding.edtMessage.setText("")
         }
     }
 
     private fun verifyUser() {
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         if(firebaseUser == null) {
-            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
     }

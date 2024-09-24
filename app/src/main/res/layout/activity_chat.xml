@@ -8,28 +8,16 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/btn_logout"
+        android:id="@+id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:drawableStart="@drawable/baseline_arrow_back_ios_new_24"
         android:padding="8dp"
-        android:text="Logout"
+        android:text="Back"
         android:textColor="#007aff"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txt_title" />
-
-    <TextView
-        android:id="@+id/btn_new_chat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="New chat"
-        android:textColor="#007aff"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txt_title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txt_title"
@@ -44,15 +32,34 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="phuc@gmail.com" />
 
+    <Button
+        android:id="@+id/btn_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/edt_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="Enter message"
+        app:layout_constraintBottom_toBottomOf="@id/btn_send"
+        app:layout_constraintEnd_toStartOf="@id/btn_send"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_send" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_conversation"
+        android:id="@+id/rcv_message"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="16dp"
-        android:layout_marginTop="16dp"
         android:clipToPadding="false"
-        tools:listitem="@layout/conversation_item"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_send"
         app:layout_constraintTop_toBottomOf="@id/txt_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        tools:listitem="@layout/conversation_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

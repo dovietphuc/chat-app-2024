@@ -51,4 +51,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.3.0')
 
     implementation 'com.google.firebase:firebase-auth'
+
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+
 }
